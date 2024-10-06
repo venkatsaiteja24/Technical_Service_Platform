@@ -1,0 +1,21 @@
+{
+  "name": "technical_service_platform",
+  "version": "1.0.0",
+  "description": "Technical_Service_Platform Website",
+  "main": "index.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
+  },
+  "author": "VenkataSaiTeja,Thammishetti",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

@@ -13,7 +13,9 @@
     "colors": "^1.4.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
-    "mongoose": "^8.7.0"
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^8.7.0",
+    "technical_service_platform": "file:"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

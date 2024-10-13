@@ -10,12 +10,20 @@
   "author": "VenkataSaiTeja,Thammishetti",
   "license": "ISC",
   "dependencies": {
+    "apis": "^0.1.2",
+    "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "express-async-handler": "^1.2.0",
+    "google": "^2.1.0",
+    "googleapis": "^144.0.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
-    "technical_service_platform": "file:"
+    "nodemailer": "^6.9.15",
+    "technical_service_platform": "file:",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

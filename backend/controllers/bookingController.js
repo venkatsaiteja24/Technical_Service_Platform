@@ -59,28 +59,38 @@ exports.confirmBooking = async (req, res) => {
 exports.cancelBooking = async (req, res) => {
     const { id } = req.params; // Get booking ID from request parameters
 
-    // Check if the requester is a technician
-    if (req.user.role !== 'technician') {
-        return res.status(403).json({ message: 'Only technicians can cancel bookings.' });
+    // Check if the requester is a technician or customer
+    if (req.user.role !== 'technician' && req.user.role !== 'customer') {
+        return res.status(403).json({ message: 'Only technicians or customers can cancel bookings.' });
     }
 
     try {
+        // Fetch the booking from the database
         const booking = await Booking.findById(id);
         if (!booking) {
             return res.status(404).json({ message: 'Booking not found' });
         }
 
+        // Check if the requester is a customer and ensure they are canceling their own booking
+        if (req.user.role === 'customer' && booking.customer.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Customers can only cancel their own bookings.' });
+        }
+
+        // Ensure the booking is not already completed
         if (booking.status === 'completed') {
             return res.status(400).json({ message: 'Cannot cancel a completed booking' });
         }
 
-        booking.status = 'cancelled'; // Update the status to 'cancelled'
+        // Update the booking status to 'cancelled'
+        booking.status = 'cancelled';
         await booking.save();
+
         res.status(200).json({ message: 'Booking cancelled', booking });
     } catch (error) {
         res.status(400).json({ message: 'Error cancelling booking', error });
     }
 };
+
 
 // Get Bookings for Technician Function
 exports.getBookingsForTechnician = async (req, res) => {
@@ -96,6 +106,22 @@ exports.getBookingsForTechnician = async (req, res) => {
         res.status(200).json(bookings);
     } catch (error) {
         res.status(400).json({ message: 'Error fetching bookings for technician', error });
+    }
+};
+
+// Get Bookings for Customer Function
+exports.getBookingsForCustomer = async (req, res) => {
+    // Check if the requester is a customer
+    if (req.user.role !== 'customer') {
+        return res.status(403).json({ message: 'Only customers can access their bookings.' });
+    }
+
+    try {
+        // Fetch bookings for the customer based on their user ID
+        const bookings = await Booking.find({ customer: req.user._id }).populate('technician service');
+        res.status(200).json(bookings);
+    } catch (error) {
+        res.status(400).json({ message: 'Error fetching bookings for customer', error });
     }
 };
 

@@ -67,7 +67,8 @@ const signup = asyncHandler(async (req, res) => {
         res.status(201).json({ message: 'User created successfully', user: newUser, token });
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return res.status(400).json({ errors: error.errors }); // Return Zod validation errors
+            console.log('Zod Validation Errors:', error.errors); // Log validation errors
+            return res.status(400).json({ errors: error.errors });
         }
         res.status(500).json({ message: 'Error during signup', error: error.message });
     }
@@ -89,7 +90,10 @@ const login = asyncHandler(async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ token, user });
+        res.status(200).json({ token, user:{
+            id: user._id, username: user.username, role: user.role,
+            
+        } });
     } catch (error) {
         res.status(500).json({ message: 'Error logging in', error: error.message });
     }
@@ -135,9 +139,47 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 });
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Get All Technicians Function
+const getAllTechnicians = asyncHandler(async (req, res) => {
+    try {
+        // Query for all technicians and select only the needed fields
+        const technicians = await User.find(
+            { role: 'technician' },
+            {
+                _id: 1, // Use _id to get the MongoDB ID
+                username: 1,
+                'technicianDetails.profession': 1,
+                'technicianDetails.skills': 1,
+                'technicianDetails.address': 1,
+            }
+        );
+
+        if (technicians.length === 0) {
+            return res.status(404).json({ message: 'No technicians found.' });
+        }
+
+        // Map to format the response to include the technician ID
+        const formattedTechnicians = technicians.map(technician => ({
+            userid: technician._id.toString(), // Convert ObjectId to string if necessary
+            username: technician.username,
+            profession: technician.technicianDetails.profession,
+            skills: technician.technicianDetails.skills,
+            address: technician.technicianDetails.address,
+        }));
+
+        res.status(200).json(formattedTechnicians);
+    } catch (error) {
+        console.error('Error fetching technicians:', error);
+        res.status(500).json({ message: 'Error fetching technicians', error: error.message });
+    }
+});
+
+
 module.exports = {
     signup,
     login,
     getUser,
     updateUser,
+    getAllTechnicians
 };
+

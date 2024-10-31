@@ -4,6 +4,7 @@ const {
     confirmBooking,
     cancelBooking,
     getBookingsForTechnician,
+    getBookingsForCustomer,
     getBookingsByStatus
 } = require('../controllers/bookingController');
 const authMiddleware = require('../middleware/authMiddleware');
@@ -20,6 +21,9 @@ router.patch('/:id/cancel', authMiddleware, cancelBooking);
 
 // Get bookings for a specific technician (accessible only to technicians)
 router.get('/technician/:technicianId', authMiddleware, getBookingsForTechnician); 
+
+// Get bookings for the logged-in customer (accessible only to customers)
+router.get('/customer/:CustomerId', authMiddleware, getBookingsForCustomer); 
 
 // Get bookings by status (accessible only to technicians)
 router.get('/status/:status', authMiddleware, getBookingsByStatus); 

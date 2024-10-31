@@ -42,73 +42,22 @@ exports.getAllServices = async (req, res) => {
     }
 };
 
+//Get All Service Names Function
+exports.getAllServiceNames = async (req, res) => {
+    try {
+        // Fetch all services and return only their names
+        const services = await Service.find({}, 'name'); // Get only the 'name' field
 
-// // Filter Technicians Function
-// exports.filterTechnicians = async (req, res) => {
-//     const { serviceName, city } = req.query; // Get service name and city from query params
+        // If no services found, send a message
+        if (services.length === 0) {
+            return res.status(404).json({ message: 'No services found' });
+        }
 
-//     try {
-//         // Find the service by name to get its ID
-//         const service = await Service.findOne({ name: serviceName });
-
-//         if (!service) {
-//             return res.status(404).json({ message: 'Service not found' });
-//         }
-
-//         // Find technicians that offer the specified service and are located in the specified city
-//         const technicians = await User.find({
-//             role: 'technician',
-//             services: service._id, // Check if the technician offers this service
-//             'technicianDetails.address.city': { $regex: city, $options: 'i' } // Match city in address
-//         });
-
-//         if (technicians.length === 0) {
-//             return res.status(404).json({ message: 'No technicians found for this service and city.' });
-//         }
-
-//         res.status(200).json(technicians);
-//     } catch (error) {
-//         res.status(400).json({ message: 'Error filtering technicians', error });
-//     }
-// };
-
-// // Link Technician to Service Function
-// exports.linkTechnicianToService = async (req, res) => {
-//     const { serviceId, technicianId } = req.body;
-
-//     // Validate the input
-//     if (!serviceId || !technicianId) {
-//         return res.status(400).json({ message: 'Service ID and Technician ID are required.' });
-//     }
-
-//     try {
-//         // Find the service by ID
-//         const service = await Service.findById(serviceId);
-//         if (!service) {
-//             return res.status(404).json({ message: 'Service not found' });
-//         }
-
-//         // Find the technician by ID
-//         const technician = await User.findById(technicianId);
-//         if (!technician || technician.role !== 'technician') {
-//             return res.status(404).json({ message: 'Technician not found or invalid role' });
-//         }
-
-//         // Check if the technician is already linked to the service
-//         if (service.technicians && service.technicians.includes(technicianId)) {
-//             return res.status(400).json({ message: 'Technician is already linked to this service' });
-//         }
-
-//         // Link the technician to the service
-//         service.technicians.push(technicianId);
-//         await service.save();
-
-//         res.status(200).json({ message: 'Technician linked to service successfully', service });
-//     } catch (error) {
-//         res.status(400).json({ message: 'Error linking technician to service', error });
-//     }
-// };
-
+        res.status(200).json(services); // Return the list of service names
+    } catch (error) {
+        res.status(400).json({ message: 'Error fetching services', error });
+    }
+};
 
 // Filter Technicians Function
 exports.filterTechnicians = async (req, res) => {

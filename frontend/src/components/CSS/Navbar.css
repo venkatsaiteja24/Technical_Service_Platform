@@ -1,0 +1,73 @@
+/* Reset button styles and add hover effect */
+button {
+    background-color: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background-color: hsl(0, 3%, 72%); /* Navbar background color */
+    color: white;
+  }
+  
+  nav button {
+    color: white;
+    background-color: hsl(200, 95%, 57%);
+    margin: 0 0.5rem;
+    border-radius: 8% 8%;
+  }
+  
+  nav button:hover {
+    background-color: hsl(200, 77%, 69%);
+    color: white;
+  }
+  
+  /* Style for the username text */
+  nav span {
+    margin-right: auto;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  /* Logout button styling */
+  nav button:last-child {
+    border: groove 0.08em red;
+    background-color: hsl(354, 100%, 37%);
+    color: white;
+  }
+  
+  nav button:last-child:hover {
+    background-color: hsl(354, 96%, 26%);
+  }
+  
+  /* Responsive layout for mobile screens */
+  @media (max-width: 768px) {
+    nav {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 1rem;
+    }
+  
+    nav button {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+  
+    nav span {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+  }
+  

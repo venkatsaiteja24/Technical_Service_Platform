@@ -82,6 +82,14 @@ const Signup = () => {
       alert('Passwords do not match');
       return;
     }
+
+  // Validate state for both customer and technician roles
+  const stateRegex = /^[A-Za-z]{2}$/;
+  const state = role === 'customer' ? customerDetails.address.state : technicianDetails.address.state;
+  if (!stateRegex.test(state)) {
+    alert('Please enter a valid 2-letter state abbreviation.');
+    return;
+  }
   
     // Prepare signup data based on user role
     const signupData = {
@@ -148,8 +156,14 @@ const Signup = () => {
           <label>City:
             <input type="text" value={customerDetails.address.city} onChange={handleAddressChange(setCustomerDetails)('city')} />
           </label>
-          <label>State:
-            <input type="text" value={customerDetails.address.state} onChange={handleAddressChange(setCustomerDetails)('state')} />
+          <label>
+              State (abbreviation, e.g., MA):
+              <input 
+                  type="text" 
+                  value={customerDetails.address.state} 
+                  onChange={handleAddressChange(setCustomerDetails)('state')} 
+                  placeholder="Enter state abbreviation" // Optional: add a placeholder for better UX
+              />
           </label>
           <label>Zip Code:
             <input type="text" value={customerDetails.address.zipCode} onChange={handleAddressChange(setCustomerDetails)('zipCode')} />
@@ -182,9 +196,16 @@ const Signup = () => {
           <label>City:
             <input type="text" value={technicianDetails.address.city} onChange={handleAddressChange(setTechnicianDetails)('city')} />
           </label>
-          <label>State:
-            <input type="text" value={technicianDetails.address.state} onChange={handleAddressChange(setTechnicianDetails)('state')} />
+          <label>
+              State (abbreviation, e.g., MA):
+              <input 
+                  type="text" 
+                  value={technicianDetails.address.state} 
+                  onChange={handleAddressChange(setTechnicianDetails)('state')} 
+                  placeholder="Enter state abbreviation" // Optional: add a placeholder for better UX
+              />
           </label>
+
           <label>Zip Code:
             <input type="text" value={technicianDetails.address.zipCode} onChange={handleAddressChange(setTechnicianDetails)('zipCode')} />
           </label>

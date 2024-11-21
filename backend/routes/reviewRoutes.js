@@ -5,6 +5,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.post('/', authMiddleware, createReview); // Create a new review
-router.get('/technician/:technicianId', getReviewsForTechnician); // Get reviews for a specific technician
+router.get('/:technicianId', getReviewsForTechnician); // Get reviews for a specific technician
 
 module.exports = router;

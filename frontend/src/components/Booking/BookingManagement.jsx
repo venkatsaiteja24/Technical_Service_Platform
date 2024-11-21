@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import '../CSS/BookingManage.css'
 
 const BookingManagement = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { user } = useSelector((state) => state.auth); // Assumes user role is part of auth state
+  const [showReviewForm, setShowReviewForm] = useState(null); // State to track which booking is being reviewed
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -21,7 +25,6 @@ const BookingManagement = () => {
         const response = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        console.log(response.data);
         setBookings(response.data);
       } catch (error) {
         setError('Failed to fetch bookings. Please try again.');
@@ -61,6 +64,48 @@ const BookingManagement = () => {
     }
   };
 
+  //function to handle completing a booking
+  const handleCompleteBooking = async (bookingId) => {
+    if (user.role === 'technician') {
+      try {
+        await axios.patch(`http://localhost:5000/api/bookings/${bookingId}/complete`, null, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        setBookings((prevBookings) =>
+          prevBookings.map((booking) =>
+            booking._id === bookingId ? { ...booking, status: 'completed' } : booking
+          )
+        );
+      } catch (error) {
+        console.error('Error completing booking:', error);
+        setError('Failed to mark booking as completed. Please try again.');
+      }
+    }
+  };
+  
+  const handleReviewSubmit = async (bookingId, technicianId) => {
+    try {
+      await axios.post(
+        `http://localhost:5000/api/reviews`,
+        { customer: user.id, technician: technicianId, service: bookingId, rating, reviewText },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
+      setShowReviewForm(null); // Hide the review form after submission
+      setRating(0); // Reset rating
+      setReviewText(''); // Reset review text
+      alert('Review submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      setError('Failed to submit review. Please try again.');
+    }
+  };
+
+  // Group bookings by technician
+  const groupedBookings = bookings.reduce((acc, booking) => {
+    (acc[booking.technician.username] = acc[booking.technician.username] || []).push(booking);
+    return acc;
+  }, {});
+
   return (
     <div>
       <h2>Manage Your Bookings</h2>
@@ -68,34 +113,80 @@ const BookingManagement = () => {
         <p>Loading bookings...</p>
       ) : error ? (
         <p style={{ color: 'red' }}>{error}</p>
-      ) : bookings.length > 0 ? (
-        <ul>
-          {bookings.map((booking) => (
-            <li key={booking._id} style={{ margin: '10px 0', padding: '10px', border: '1px solid #ccc' }}>
-              <p><strong>Service:</strong> {booking.service.name}</p>
-              <p><strong>Technician:</strong> {booking.technician.username}</p>
-              <p><strong>Date:</strong> {new Date(booking.date).toLocaleDateString()}</p>
-              <p><strong>Status:</strong> {booking.status}</p>
+      ) : Object.keys(groupedBookings).length > 0 ? (
+        Object.keys(groupedBookings).map((technicianName) => (
+          <div key={technicianName} className="technician-bookings">
+            <h3>{technicianName}{/*-{groupedBookings[technicianName][0].service.name}*/}</h3>
+            <ul>
+              {groupedBookings[technicianName].map((booking) => (
+                <li key={booking._id} className="booking-item">
+                  <p><strong>Service:</strong> {booking.service.name}</p>
+                  <p><strong>Date:</strong> {new Date(booking.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</p>
+                  <p><strong>Status:</strong> {booking.status}</p>
 
-              {/* Conditional rendering based on user role and booking status */}
-              {user.role === 'customer' && booking.status === 'pending' && (
-                <button onClick={() => handleCancelBooking(booking._id)}>Cancel Booking</button>
-              )}
-              {user.role === 'technician' && (
-                <>
-                  {booking.status === 'pending' && (
-                    <button onClick={() => handleConfirmBooking(booking._id)}>Confirm Booking</button>
+                  {user.role === 'customer' && booking.status === 'completed' && (
+                    <>
+                      {showReviewForm === booking._id ? (
+                        <div className="review-form">
+                          <h3>Leave a Review</h3>
+                          <label>
+                            Rating:
+                            <input
+                              type="number"
+                              min="1"
+                              max="5"
+                              value={rating}
+                              onChange={(e) => setRating(e.target.value)}
+                            />
+                          </label>
+                          <label>
+                            Review:
+                            <textarea
+                              value={reviewText}
+                              onChange={(e) => setReviewText(e.target.value)}
+                            />
+                          </label>
+                          <button onClick={() => handleReviewSubmit(booking._id, booking.technician._id)}>
+                            Submit Review
+                          </button>
+                          <button onClick={() => setShowReviewForm(null)}>Cancel</button>
+                        </div>
+                      ) : (
+                        <button onClick={() => setShowReviewForm(booking._id)}>Leave a Review</button>
+                      )}
+                    </>
                   )}
-                  {booking.status !== 'confirmed' && ( // Only show this button if the status is not canceled
-                    <button onClick={() => handleCancelBooking(booking._id)}>Cancel Booking</button>
-                  )}
-                  
-                </>
-              )}
-            </li>
-          ))}
 
-        </ul>
+                  {user.role === 'customer' && (booking.status === 'pending' || booking.status === 'confirmed') && (
+                    <button className="cancel-button" onClick={() => handleCancelBooking(booking._id)}>
+                      Cancel Booking
+                    </button>
+                  )}
+
+                  {user.role === 'technician' && (
+                    <>
+                      {booking.status === 'pending' && (
+                        <button className="confirm-button" onClick={() => handleConfirmBooking(booking._id)}>
+                          Confirm Booking
+                        </button>
+                      )}
+                      {booking.status === 'confirmed' && (
+                        <>
+                          <button className="complete-button" onClick={() => handleCompleteBooking(booking._id)}>
+                            Complete Booking
+                          </button>
+                          <button className="cancel-button" onClick={() => handleCancelBooking(booking._id)}>
+                            Cancel Booking
+                          </button>
+                        </>
+                      )}
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
       ) : (
         <p>No bookings found.</p>
       )}

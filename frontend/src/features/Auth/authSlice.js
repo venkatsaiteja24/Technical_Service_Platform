@@ -33,6 +33,23 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// Async action for updating user profile
+export const updateUser = createAsyncThunk(
+  'auth/updateUser',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axios.put('http://localhost:5000/api/auth/update', userData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      return response.data; // Return updated user data
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Update failed');
+    }
+  }
+);
+
 // Create a slice for auth
 const authSlice = createSlice({
   name: 'auth',
@@ -86,6 +103,24 @@ const authSlice = createSlice({
         state.loading = false; // Set loading to false
         state.error = action.payload; // Set error message
       });
+
+    // Handle update user actions
+     builder
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user; // Update the user state with the returned data
+        localStorage.setItem('user', JSON.stringify(action.payload.user)); // Update user in localStorage
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload;
+      });
+
+
   },
 });
 

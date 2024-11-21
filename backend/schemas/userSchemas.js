@@ -4,7 +4,7 @@ const { z } = require('zod');
 const addressSchema = z.object({
     street: z.string().nonempty('Please enter street address'),
     city: z.string().nonempty('Please enter city'),
-    state: z.string().nonempty('Please enter state'),
+    state: z.string().nonempty('Please enter state').regex(/^[A-Za-z]{2}$/, 'Please enter a valid 2-letter state abbreviation'),
     zipCode: z.string().nonempty('Please enter zip code').regex(/^\d{5}$/, 'Please enter a valid zip code'),
 });
 

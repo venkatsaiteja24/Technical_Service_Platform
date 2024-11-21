@@ -5,7 +5,8 @@ const {
     cancelBooking,
     getBookingsForTechnician,
     getBookingsForCustomer,
-    getBookingsByStatus
+    getBookingsByStatus,
+    markBookingAsCompleted
 } = require('../controllers/bookingController');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
@@ -27,5 +28,8 @@ router.get('/customer/:CustomerId', authMiddleware, getBookingsForCustomer);
 
 // Get bookings by status (accessible only to technicians)
 router.get('/status/:status', authMiddleware, getBookingsByStatus); 
+
+// Route to mark a booking as completed
+router.patch('/:id/complete', authMiddleware, markBookingAsCompleted);
 
 module.exports = router;

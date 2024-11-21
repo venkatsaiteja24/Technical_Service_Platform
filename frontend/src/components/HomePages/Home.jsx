@@ -18,8 +18,7 @@ const Home = () => {
       <section>
         <h2>Our Services</h2>
         <div className="service-images">
-          <img src="plumbing.jpg" alt="Plumbing" />
-          <img src="electrician.jpg" alt="Electrical Work" />
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi beatae nobis vitae quidem maiores sunt iste, dolores illo vero expedita ipsum optio commodi ad. At cum vel suscipit doloremque sapiente.</p>
         </div>
       </section>
 

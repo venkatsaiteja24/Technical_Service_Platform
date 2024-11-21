@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import '../CSS/BookingForm.css'
 
 const BookingForm = ({ technicianId, customerId, serviceId }) => {
   const [date, setDate] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      const timeout = setTimeout(() => setSuccess(''), 5000);
+      return () => clearTimeout(timeout); // Cleanup on unmount or when success changes
+    }
+  }, [success]);
 
   const handleBooking = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -52,7 +60,6 @@ const BookingForm = ({ technicianId, customerId, serviceId }) => {
       if (response.status === 201) { // Check for 201 Created
         setSuccess('Booking successful!');
         setDate(''); // Clear the form
-        setTimeout(() => setSuccess(''), 5000); // Clear success message after 5s
       }
     } catch (error) {
       const errorMsg = error.response && error.response.data
@@ -75,7 +82,7 @@ const BookingForm = ({ technicianId, customerId, serviceId }) => {
         required 
         disabled={loading} // Disable input while loading
       />
-      <button type="submit" disabled={loading}>
+      <button type="submit" disabled={loading} className='book-btn'>
         {loading ? 'Booking...' : 'Book'}
       </button>
       {error && <p style={{ color: 'red' }}>{error}</p>}

@@ -91,6 +91,34 @@ exports.cancelBooking = async (req, res) => {
     }
 };
 
+// Mark Booking as Completed Function
+exports.markBookingAsCompleted = async (req, res) => {
+    const { id } = req.params; // Get booking ID from request parameters
+
+    // Check if the requester is a technician
+    if (req.user.role !== 'technician') {
+        return res.status(403).json({ message: 'Only technicians can mark bookings as completed.' });
+    }
+
+    try {
+        const booking = await Booking.findById(id);
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        // Ensure the booking is in a confirmable state
+        if (booking.status !== 'confirmed') {
+            return res.status(400).json({ message: 'Only confirmed bookings can be marked as completed' });
+        }
+
+        booking.status = 'completed'; // Update the status to 'completed'
+        await booking.save();
+        res.status(200).json({ message: 'Booking marked as completed', booking });
+    } catch (error) {
+        res.status(400).json({ message: 'Error marking booking as completed', error });
+    }
+};
+
 
 // Get Bookings for Technician Function
 exports.getBookingsForTechnician = async (req, res) => {

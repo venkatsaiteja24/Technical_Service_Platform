@@ -12,6 +12,8 @@ import Home from './components/HomePages/Home';
 import NotFound from './components/NotFound';
 import BookingManagement from './components/Booking/BookingManagement';
 import TechnicianHome from './components/HomePages/TechnicianHome';
+import UserProfile from './components/Auth/UserProfile'
+import './App.css'
 
 // ProtectedRoute component decides what to show based on login status and user role
 const ProtectedRoute = ({ customerElement, technicianElement }) => {
@@ -44,6 +46,17 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/manage-bookings" element={<BookingManagement />} />
           <Route path="/technician-home" element={<TechnicianHome />} />
+
+            {/* Protected Route for User Profile */}
+            <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute 
+                customerElement={<UserProfile />} 
+                technicianElement={<Navigate to="/technician-home" />} // Redirect technicians to their dashboard if they try to access UserProfile
+              />
+            } 
+          />
 
           {/* Handle all other undefined routes */}
           <Route path="*" element={<NotFound />} />

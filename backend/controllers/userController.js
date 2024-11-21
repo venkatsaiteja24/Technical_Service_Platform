@@ -90,14 +90,26 @@ const login = asyncHandler(async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ token, user:{
-            id: user._id, username: user.username, role: user.role,
-            
-        } });
+
+        // Extract the address from customerDetails or technicianDetails based on role
+        const address = user.role === 'technician' 
+            ? user.technicianDetails.address 
+            : user.customerDetails.address;
+
+        res.status(200).json({ 
+            token, 
+            user: {
+                id: user._id,
+                username: user.username,
+                role: user.role,
+                address: address || "Address not available" // Default message if address is not provided
+            } 
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error logging in', error: error.message });
     }
 });
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Get User Function
 const getUser = asyncHandler(async (req, res) => {

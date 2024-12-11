@@ -48,7 +48,7 @@ const BookingForm = ({ technicianId, customerId, serviceId }) => {
       console.log('Sending booking data:', bookingData); // Log booking data
 
       const response = await axios.post(
-        'http://localhost:5000/api/bookings',
+        'https://technical-service-platform.vercel.app/api/bookings',
         bookingData,
         {
           headers: {

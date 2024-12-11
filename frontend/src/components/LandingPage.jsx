@@ -30,8 +30,8 @@ const LandingPage = () => {
       setLoading(true);
       try {
         const [techResponse, serviceResponse] = await Promise.all([
-          axios.get('http://localhost:5000/api/auth/all-technicians'),
-          axios.get('http://localhost:5000/api/services'),
+          axios.get('https://technical-service-platform.vercel.app/api/auth/all-technicians'),
+          axios.get('https://technical-service-platform.vercel.app/api/services'),
         ]);
 
         const serviceMap = serviceResponse.data.reduce((map, service) => {
@@ -47,7 +47,7 @@ const LandingPage = () => {
                                 // Fetch reviews for each technician
                           const reviewsResponse = await Promise.all(
                             techniciansWithServiceIds.map((tech) =>
-                              axios.get(`http://localhost:5000/api/reviews/${tech.userid}`)
+                              axios.get(`https://technical-service-platform.vercel.app/api/reviews/${tech.userid}`)
                             )
                           );
 

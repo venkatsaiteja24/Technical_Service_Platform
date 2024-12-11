@@ -19,8 +19,8 @@ const BookingManagement = () => {
         // Fetch bookings based on the user role
         const endpoint =
           user.role === 'technician'
-            ? `http://localhost:5000/api/bookings/technician/${user.id}` // Technician bookings
-            : `http://localhost:5000/api/bookings/customer/${user.id}`; // Customer bookings
+            ? `https://technical-service-platform.vercel.app/api/bookings/technician/${user.id}` // Technician bookings
+            : `https://technical-service-platform.vercel.app/api/bookings/customer/${user.id}`; // Customer bookings
 
         const response = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -38,7 +38,7 @@ const BookingManagement = () => {
 
   const handleCancelBooking = async (bookingId) => {
     try {
-      await axios.patch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, null, {
+      await axios.patch(`https://technical-service-platform.vercel.app/api/bookings/${bookingId}/cancel`, null, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setBookings(bookings.filter((booking) => booking._id !== bookingId)); // Update state after cancel
@@ -50,7 +50,7 @@ const BookingManagement = () => {
   const handleConfirmBooking = async (bookingId) => {
     if (user.role === 'technician') {
       try {
-        await axios.patch(`http://localhost:5000/api/bookings/${bookingId}/confirm`, null, {
+        await axios.patch(`https://technical-service-platform.vercel.app/api/bookings/${bookingId}/confirm`, null, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setBookings((prevBookings) =>
@@ -68,7 +68,7 @@ const BookingManagement = () => {
   const handleCompleteBooking = async (bookingId) => {
     if (user.role === 'technician') {
       try {
-        await axios.patch(`http://localhost:5000/api/bookings/${bookingId}/complete`, null, {
+        await axios.patch(`https://technical-service-platform.vercel.app/api/bookings/${bookingId}/complete`, null, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setBookings((prevBookings) =>
@@ -86,7 +86,7 @@ const BookingManagement = () => {
   const handleReviewSubmit = async (bookingId, technicianId) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/reviews`,
+        `https://technical-service-platform.vercel.app/api/reviews`,
         { customer: user.id, technician: technicianId, service: bookingId, rating, reviewText },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );

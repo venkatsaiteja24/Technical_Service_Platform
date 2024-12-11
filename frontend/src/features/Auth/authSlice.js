@@ -10,7 +10,7 @@ export const signupUser = createAsyncThunk(
   'auth/signupUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', userData);
+      const response = await axios.post('https://technical-service-platform.vercel.app/api/auth/signup', userData);
       return response.data; // Return user data on successful signup
     } catch (error) {
       // Return error message or default message if not available
@@ -24,7 +24,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (loginData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', loginData);
+      const response = await axios.post('https://technical-service-platform.vercel.app/api/auth/login', loginData);
       return response.data; // Return user data on successful login
     } catch (error) {
       // Return error message or default message if not available
@@ -38,7 +38,7 @@ export const updateUser = createAsyncThunk(
   'auth/updateUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.put('http://localhost:5000/api/auth/update', userData, {
+      const response = await axios.put('https://technical-service-platform.vercel.app/api/auth/update', userData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

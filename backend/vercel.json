@@ -8,8 +8,8 @@
   ],
   "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/backend/api/$1"
+      "source": "/api/(.*)",
+      "destination": "/backend/api/$1"
     }
   ],
   "headers": [

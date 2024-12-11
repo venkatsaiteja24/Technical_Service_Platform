@@ -14,7 +14,7 @@ const app = express()
 // Enable CORS for all routes
 app.use(cors(
   {
-    origin: ["https://technical-service-platform-ytkr.vercel.app/"]
+    origin: ["https://technical-service-platform-ytkr.vercel.app"]
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   }

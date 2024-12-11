@@ -38,7 +38,7 @@ const Signup = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/services/names');
+        const response = await axios.get('https://technical-service-platform.vercel.app/api/services/names');
         const names = response.data.map((service) => service.name);
         setServiceNames(names);
       } catch (error) {

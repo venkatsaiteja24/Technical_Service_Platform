@@ -15,6 +15,8 @@ const app = express()
 app.use(cors(
   {
     origin: ["https://technical-service-platform-ytkr.vercel.app/"]
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
   }
 ));
 

@@ -42,6 +42,7 @@
 }
 
 .booking-item:hover {
+    background-color: #f4f4f4;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -66,6 +67,17 @@ button {
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
+button:focus {
+    outline: 2px solid #007bff;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+
+
 
 button:hover {
     opacity: 0.9;

@@ -20,7 +20,7 @@ const Navbar = () => {
   const handleHomeClick = () => {
     if (user) {
       if (user.role === 'customer') {
-        navigate('/'); // Redirect to landing page for customers
+        navigate('/customer-home'); // Redirect to landing page for customers
       } else if (user.role === 'technician') {
         navigate('/technician-home'); // Redirect to technician home for technicians
       }

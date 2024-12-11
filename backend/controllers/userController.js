@@ -96,13 +96,18 @@ const login = asyncHandler(async (req, res) => {
             ? user.technicianDetails.address 
             : user.customerDetails.address;
 
+        const phoneNumber = user.role === 'technician'
+            ? user.technicianDetails.phoneNumber
+            : user.customerDetails.phoneNumber;
+
         res.status(200).json({ 
             token, 
             user: {
                 id: user._id,
                 username: user.username,
                 role: user.role,
-                address: address || "Address not available" // Default message if address is not provided
+                address: address || "Address not available", // Default message if address is not provided
+                phoneNumber: phoneNumber || "Phone Number not available"
             } 
         });
     } catch (error) {
@@ -116,40 +121,96 @@ const getUser = asyncHandler(async (req, res) => {
     res.status(200).json(req.user);
 });
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Update User Function
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Update User Function
+// Update User Function
 const updateUser = asyncHandler(async (req, res) => {
-    const { username, email, password, technicianDetails, customerDetails } = req.body;
+    const { username, phoneNumber, address, password } = req.body;
 
     if (!req.user) {
         return res.status(404).json({ message: 'User not found' });
     }
 
     const updates = {};
-    if (username) updates.username = username;
-    if (email) updates.email = email;
-    if (password) updates.password = await bcrypt.hash(password, 10);
+
+    // Update username if provided and different from current username
+    if (username && username !== req.user.username) {
+        updates.username = username;
+    }
+
+    // Update password if provided
+    if (password) {
+        try {
+            updates.password = await bcrypt.hash(password, 10);
+        } catch (error) {
+            return res.status(500).json({ message: 'Error hashing password', error: error.message });
+        }
+    }
+
+    // Role-specific updates (Technician or Customer)
+    if (req.user.role === 'technician') {
+        // Update phone number for technician role
+        if (phoneNumber && phoneNumber !== req.user.technicianDetails?.phoneNumber) {
+            updates['technicianDetails.phoneNumber'] = phoneNumber;
+        }
+
+        // Update address for technician role
+        if (address) {
+            if (address.street) updates['technicianDetails.address.street'] = address.street;
+            if (address.city) updates['technicianDetails.address.city'] = address.city;
+            if (address.state) updates['technicianDetails.address.state'] = address.state;
+            if (address.zipCode) updates['technicianDetails.address.zipCode'] = address.zipCode;
+        }
+    } else if (req.user.role === 'customer') {
+        // Update phone number for customer role
+        if (phoneNumber && phoneNumber !== req.user.customerDetails?.phoneNumber) {
+            updates['customerDetails.phoneNumber'] = phoneNumber;
+        }
+
+        // Update address for customer role
+        if (address) {
+            if (address.street) updates['customerDetails.address.street'] = address.street;
+            if (address.city) updates['customerDetails.address.city'] = address.city;
+            if (address.state) updates['customerDetails.address.state'] = address.state;
+            if (address.zipCode) updates['customerDetails.address.zipCode'] = address.zipCode;
+        }
+    } else {
+        return res.status(400).json({ message: 'Invalid role for update' });
+    }
 
     try {
-        // Validate and update technician details
-        if (req.user.role === 'technician' && technicianDetails) {
-            userSchema.parse({ technicianDetails }); // Validate technician details with Zod
-            updates.technicianDetails = technicianDetails;
-        } 
-        // Validate and update customer details
-        else if (req.user.role === 'customer' && customerDetails) {
-            userSchema.parse({ customerDetails }); // Validate customer details with Zod
-            updates.customerDetails = customerDetails;
-        }
+        // Use $set to update only the provided fields
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: updates },
+            { new: true }
+        );
 
-        const updatedUser = await User.findByIdAndUpdate(req.user._id, updates, { new: true });
-        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+        // Create a new userResponse object that flattens the phoneNumber and address
+        const userResponse = {
+            id: updatedUser._id,
+            username: updatedUser.username,
+            role: updatedUser.role,
+            phoneNumber: updatedUser.role === 'customer'
+                ? updatedUser.customerDetails?.phoneNumber
+                : updatedUser.technicianDetails?.phoneNumber,
+            address: updatedUser.role === 'customer'
+                ? updatedUser.customerDetails?.address
+                : updatedUser.technicianDetails?.address
+        };
+
+        res.status(200).json({ message: 'User updated successfully', user: userResponse });
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({ errors: error.errors }); // Return Zod validation errors
-        }
         res.status(500).json({ message: 'Error updating user', error: error.message });
     }
 });
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Get All Technicians Function
 const getAllTechnicians = asyncHandler(async (req, res) => {

@@ -1,15 +1,16 @@
 // src/components/Home.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import '../CSS/Home.css'; // Import the CSS file
 
 const Home = () => {
-    const navigate = useNavigate(); // Create a navigate function
+  const navigate = useNavigate(); // Create a navigate function
+
   return (
-    <div>
+    <div className="home">
       <h1>Welcome to Our Service Platform</h1>
       <p>We connect customers with trusted local technicians for all your home service needs.</p>
-      
+
       <section>
         <h2>About Us</h2>
         <p>We aim to provide a seamless and reliable platform for booking services like plumbing, electrical work, and more.</p>

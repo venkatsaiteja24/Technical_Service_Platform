@@ -1,73 +1,85 @@
 /* Reset button styles and add hover effect */
 button {
-    background-color: transparent;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #f0f0f0;
-    color: #333;
-  }
-  
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.75rem 1.5rem; /* Consistent padding */
+  transition: background-color 0.3s, color 0.3s, transform 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #f4f4f4; /* Light gray for hover */
+  color: #333; /* Dark text color */
+  transform: scale(1.05); /* Slight scaling effect */
+}
+
+button:focus {
+  outline: 2px solid #007bff; /* Blue focus outline */
+}
+
+/* Navbar Styles */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #ffffff; /* White background for contrast */
+  color: #333333; /* Dark text color */
+  border-bottom: 1px solid #ccc; /* Subtle border at the bottom */
+}
+
+nav button {
+  color: #ffffff; /* White text for buttons */
+  background-color: #007bff; /* Primary blue color */
+  margin: 0 0.5rem;
+  border-radius: 4px; /* Smooth rounded corners */
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+nav button:hover {
+  background-color: #0056b3; /* Darker blue hover effect */
+  color: #ffffff; /* Maintain white text */
+  transform: scale(1.05); /* Slight hover zoom */
+}
+
+/* Style for the username text */
+nav span {
+  margin-right: auto;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333333; /* Dark text color */
+}
+
+/* Logout button styling */
+nav button:last-child {
+  border: 1px solid #dc3545; /* Red border for logout */
+  background-color: #dc3545; /* Red background */
+  color: white;
+  border-radius: 4px; /* Rounded corners */
+}
+
+nav button:last-child:hover {
+  background-color: #c82333; /* Darker red on hover */
+  color: white; /* Keep text white */
+}
+
+/* Responsive layout for mobile screens */
+@media (max-width: 768px) {
   nav {
-    display: flex;
+    flex-direction: column; /* Stack items vertically */
     align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    background-color: hsl(0, 3%, 72%); /* Navbar background color */
-    color: white;
+    padding: 1.5rem; /* Increased padding */
   }
-  
+
   nav button {
-    color: white;
-    background-color: hsl(200, 95%, 57%);
-    margin: 0 0.5rem;
-    border-radius: 8% 8%;
+    width: 100%; /* Buttons take full width on mobile */
+    margin: 0.5rem 0;
   }
-  
-  nav button:hover {
-    background-color: hsl(200, 77%, 69%);
-    color: white;
-  }
-  
-  /* Style for the username text */
+
   nav span {
-    margin-right: auto;
-    font-size: 1.2rem;
-    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center; /* Center align username text */
+    font-size: 1rem; /* Adjust font size for mobile */
   }
-  
-  /* Logout button styling */
-  nav button:last-child {
-    border: groove 0.08em red;
-    background-color: hsl(354, 100%, 37%);
-    color: white;
-  }
-  
-  nav button:last-child:hover {
-    background-color: hsl(354, 96%, 26%);
-  }
-  
-  /* Responsive layout for mobile screens */
-  @media (max-width: 768px) {
-    nav {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 1rem;
-    }
-  
-    nav button {
-      width: 100%;
-      margin: 0.5rem 0;
-    }
-  
-    nav span {
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-  }
-  
+}

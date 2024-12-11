@@ -12,7 +12,11 @@ import Home from './components/HomePages/Home';
 import NotFound from './components/NotFound';
 import BookingManagement from './components/Booking/BookingManagement';
 import TechnicianHome from './components/HomePages/TechnicianHome';
-import UserProfile from './components/Auth/UserProfile'
+import UserProfile from './components/Auth/UserProfile';
+import CustomerHome from './components/HomePages/CustomerHome';
+import UserProfileCard from './components/Auth/UserProfileCard';
+import ContactSupport from './components/ContactSupport';
+
 import './App.css'
 
 // ProtectedRoute component decides what to show based on login status and user role
@@ -46,6 +50,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/manage-bookings" element={<BookingManagement />} />
           <Route path="/technician-home" element={<TechnicianHome />} />
+          <Route path="/update-profile" element={< UserProfile/>} />
+          <Route path="/landing-page" element={<LandingPage />} />
+          <Route path="/customer-home" element={<CustomerHome />} />
+          <Route path="/user-profile" element={<UserProfileCard />} />
+          <Route path="/contact-support" element={<ContactSupport />} />
 
             {/* Protected Route for User Profile */}
             <Route 

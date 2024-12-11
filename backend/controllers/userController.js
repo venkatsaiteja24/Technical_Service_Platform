@@ -64,7 +64,7 @@ const signup = asyncHandler(async (req, res) => {
         await newUser.save();
 
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(201).json({ message: 'User created successfully', user: newUser, token });
+        res.status(201).json({ message: 'User created successfully', token, user: newUser  });
     } catch (error) {
         if (error instanceof z.ZodError) {
             console.log('Zod Validation Errors:', error.errors); // Log validation errors
